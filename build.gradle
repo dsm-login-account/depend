@@ -1,0 +1,127 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.1'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'war'
+}
+
+group = 'com.dsmentoring.sac'
+version = '5.0.2'
+
+java {
+	sourceCompatibility = '17'
+}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	configurations {
+		all*.exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+		all*.exclude group: 'commons-logging', module: 'commons-logging'
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+//	implementation 'org.springframework.boot:spring-boot-start-data-redis'
+//	implementation 'org.springframework.boot:spring-boot-session-data-redis'
+
+	implementation 'org.springframework:spring-websocket'
+	implementation 'org.springframework:spring-messaging'
+
+	// mybatis
+	implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2" // version 변경금지!
+
+	// BouncyCastle
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.76'
+	implementation 'org.bouncycastle:bcpkix-jdk18on:1.76'
+	implementation 'org.bouncycastle:bcpg-jdk18on:1.76'
+	implementation 'org.bouncycastle:bcutil-jdk18on:1.76'
+
+	// util
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
+	// exec
+	implementation 'org.zeroturnaround:zt-exec:1.12'
+
+	// sql log
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	implementation 'mysql:mysql-connector-java:8.0.33'
+
+	implementation 'oro:oro:2.0.8'// jakarta-oro-2.0.8.jar  --> Perl5Util
+	implementation 'com.googlecode.java-ipv6:java-ipv6:0.17'// java-ip60.15.jar
+
+	implementation 'commons-fileupload:commons-fileupload:1.5'
+
+	/** Gson */
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+	// Java Simplified Encryption
+	//implementation 'org.jasypt:jasypt:1.9.3'
+
+
+	//google QR
+	implementation 'com.google.zxing:core:3.5.1'
+	implementation 'com.google.zxing:javase:3.5.1'
+	implementation 'commons-codec:commons-codec:1.15' // GoogleOTP
+
+	// excel
+	implementation 'org.apache.poi:poi:5.2.3'
+	implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl' // jsp taglib uri
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	/* aop */
+	runtimeOnly 'org.aspectj:aspectjweaver:1.9.19'
+
+	/* 단위 테스트용 In-memory DB */
+	runtimeOnly "com.h2database:h2"
+
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	//providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	/* Hadoop */
+	implementation files('libs/HadoopHDFS.jar')
+	implementation ('org.apache.hadoop:hadoop-common:3.3.6')
+
+	// Auth : jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6' // or 'io.jsonwebtoken:jjwt-gson:0.12.6' for gson
+	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2'
+
+}
+
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
+
+tasks {
+
+	processResources {
+		duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+	}
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
